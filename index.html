@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>餐廳篩選系統</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    header {
+      background-color: #4CAF50;
+      padding: 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    select, button {
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .footer {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    餐廳篩選系統
+  </header>
+
+  <div class="content">
+    <h2>選擇篩選條件</h2>
+    <form id="filterForm">
+      <label for="door">選擇門口：</label>
+      <select id="door" name="door">
+        <option value="前門">前門</option>
+        <option value="側門">側門</option>
+        <option value="後門">後門</option>
+      </select>
+      <br>
+      <button type="button" onclick="randomRestaurant()">隨機選擇餐廳</button>
+    </form>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <div class="footer">
+    © 2024 餐廳篩選系統
+  </div>
+
+  <script>
+    // 餐廳資料
+    const restaurants = {
+      "前門": ["丹尼廚房", "蕉ㄚ吐司", "拉麵圖書館", "早到晚到", "前門宜蘭", "鐵板燒"],
+      "側門": ["大雄", "側門宜蘭"],
+      "後門": ["夭壽鍋", "炒飯", "120(還是100)鐵板燒"]
+    };
+
+    // 隨機選擇餐廳
+    function randomRestaurant() {
+      const door = document.getElementById('door').value; // 獲取選擇的門口
+      const selectedRestaurants = restaurants[door]; // 根據選擇的門口篩選餐廳
+
+      if (selectedRestaurants && selectedRestaurants.length > 0) {
+        // 隨機選擇餐廳
+        const randomIndex = Math.floor(Math.random() * selectedRestaurants.length);
+        const restaurant = selectedRestaurants[randomIndex];
+        document.getElementById('result').innerText = `隨機選擇的餐廳是：${restaurant}`;
+      } else {
+        document.getElementById('result').innerText = "沒有符合條件的餐廳。";
+      }
+    }
+  </script>
+
+</body>
+</html>
