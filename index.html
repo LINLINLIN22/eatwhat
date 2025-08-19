@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>餐廳篩選系統</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    header {
+      background-color: #4CAF50;
+      padding: 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    select, button{
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      text-align: left; /* 將結果對齊到左邊 */
+    }
+
+    .footer {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+  
+
+</head>
+<body>
+<header>
+    北大 eat what
+</header>
+<div class="content">
+  <h2>選擇篩選條件</h2>
+  <label for="door">位置：</label>
+  <select id="door">
+    <option value="不限">不限</option> <!-- 新增這行 -->
+    <option value="前門">前門</option>
+    <option value="側門">側門</option>
+    <option value="後門">後門</option>
+    <option value="我愛學餐">我愛學餐</option>
+  </select>
+
+  <label for="time">時段：</label>
+  <select id="time">
+    <option value="午餐">午餐</option>
+    <option value="晚餐">晚餐</option>
+  </select>
+
+  <button onclick="randomRestaurant()">隨機選擇餐廳</button>
+  <div id="result"></div>
+</div>
+
+
+  <div class="footer">
+    © 2024 北大 eat what
+  </div>
+
+  <script>
+    // 讀取 CSV 檔案並解析
+    let restaurantData = [];
+
+    window.onload = function () {
+      Papa.parse("restaurants.csv", {
+        download: true,
+        header: true,
+        complete: function (results) {
+          restaurantData = results.data;
+        }
+      });
+    };
+
+
+
+    //  only random
+    // function randomRestaurant() {
+    //   const door = document.getElementById('door').value;
+    //   const time = document.getElementById('time').value;
+
+    //   const filtered = restaurantData.filter(r =>
+    //     r["位置"] === door && r["時段"] === time
+    //   );
+
+    //   if (filtered.length > 0) {
+    //     const restaurant = filtered[Math.floor(Math.random() * filtered.length)]["餐廳名稱"];
+    //     document.getElementById('result').innerText = `隨機選擇的餐廳是：${restaurant}`;
+    //   } else {
+    //     document.getElementById('result').innerText = "沒有符合條件的餐廳。";
+    //   }
+    // }
+function randomRestaurant() {
+  const door = document.getElementById('door').value;
+  const time = document.getElementById('time').value;
+
+//   no 不限的寫法
+//   const filtered = restaurantData.filter(r =>
+//     r["位置"] === door && r["時段"] === time
+//   );
+
+  const filtered = restaurantData.filter(r => {
+  const matchTime = r["時段"] === time;
+  const matchDoor = (door === "不限") || (r["位置"] === door);
+  return matchTime && matchDoor;
+});
+
+
+  const resultDiv = document.getElementById('result');
+
+  if (filtered.length > 0) {
+    // 隨機選一間餐廳
+    const randomIndex = Math.floor(Math.random() * filtered.length);
+    const selected = filtered[randomIndex]["餐廳名稱"];
+
+    // 產生餐廳列表 HTML
+    const listHTML = filtered.map(r => `<li>${r["餐廳名稱"]}</li>`).join('');
+
+    // 顯示結果
+    resultDiv.innerHTML = `
+      ✅ 隨機選擇的餐廳是：<strong>${selected}</strong><br><br>
+      📋 符合條件的所有餐廳如下：
+      <ul>${listHTML}</ul>
+    `;
+  } else {
+    resultDiv.innerHTML = "❌ 沒有符合條件的餐廳。";
+  }
+}
+
+
+  </script>
+</body>
+</html>
